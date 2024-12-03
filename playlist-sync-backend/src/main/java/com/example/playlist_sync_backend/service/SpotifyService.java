@@ -1,5 +1,7 @@
 package com.example.playlist_sync_backend.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.stereotype.Service;
@@ -25,11 +27,31 @@ public class SpotifyService {
     public String fetchUserPlaylists(String userName) {
         String token = getAccessToken(userName);
 
-        return webClient.get()
+        return this.webClient.get()
                 .uri("/me/playlists")
                 .header("Authorization", "Bearer " + token)
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
+    }
+
+    public String fetchUserTop5Songs(String userName) {
+        String token = getAccessToken(userName);
+        try {
+            String jsonResponse =  this.webClient.get()
+                    .uri("/me/top/tracks?time_range=long_term&limit=5")
+                    .header("Authorization", "Bearer " + token)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+            System.out.println(jsonResponse);
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode items = objectMapper.readTree(jsonResponse).get("items");
+            return items.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Error fetching user top songs: " + e.getMessage();
+        }
+
     }
 }

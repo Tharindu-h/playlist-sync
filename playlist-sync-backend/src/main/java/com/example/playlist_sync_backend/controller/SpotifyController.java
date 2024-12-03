@@ -19,12 +19,17 @@ public class SpotifyController {
 
     @GetMapping("/token")
     public String getSpotifyToken(@AuthenticationPrincipal OAuth2User user) {
-        String token = spotifyService.getAccessToken(user.getName());
+        String token = this.spotifyService.getAccessToken(user.getName());
         return "Access token: " + token;
     }
 
     @GetMapping("/playlists")
     public String getPlaylists(@AuthenticationPrincipal OAuth2User user) {
-        return spotifyService.fetchUserPlaylists(user.getName());
+        return this.spotifyService.fetchUserPlaylists(user.getName());
+    }
+
+    @GetMapping("/top5songs")
+    public String getTop5Songs(@AuthenticationPrincipal OAuth2User user) {
+        return this.spotifyService.fetchUserTop5Songs(user.getName());
     }
 }
