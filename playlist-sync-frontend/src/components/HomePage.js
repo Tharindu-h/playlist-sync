@@ -6,12 +6,17 @@ function HomePage() {
     };
 
     return (
-        <div className="h-screen bg-gray-100 flex items-center justify-center">
+        <div className="flex items-center justify-center h-screen bg-gradient-to-r from-green-400 to-blue-500">
             <div className="text-center">
-                <h1 className="text-4xl font-bold text-gray-800 mb-4">Welcome to Playlist Sync</h1>
+                <h1 className="text-5xl font-bold text-white mb-6">
+                    Welcome to Playlist Sync
+                </h1>
+                <p className="text-lg text-gray-200 mb-8">
+                    Sync your favorite Spotify playlists across platforms.
+                </p>
                 <button
                     onClick={handleLogin}
-                    className="bg-green-500 text-white px-6 py-3 rounded-md hover:bg-green-600"
+                    className="bg-white text-green-500 font-semibold py-3 px-6 rounded-md shadow-lg hover:bg-green-500 hover:text-white transition duration-300"
                 >
                     Login with Spotify
                 </button>
