@@ -47,7 +47,8 @@ public class SpotifyService {
             System.out.println(jsonResponse);
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode items = objectMapper.readTree(jsonResponse).get("items");
-            return items.toString();
+//            return items.toString();
+            return jsonResponse;
         } catch (Exception e) {
             e.printStackTrace();
             return "Error fetching user top songs: " + e.getMessage();

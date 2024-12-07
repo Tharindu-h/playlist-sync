@@ -6,18 +6,25 @@ function Dashboard() {
 
     useEffect(() => {
         axios
-            .get("http://localhost:8080/api/spotify/top-songs", { withCredentials: true })
+            .get("http://localhost:8080/api/spotify/top5songs", { withCredentials: true })
             .then((response) => {
-                setTopSongs(response.data);
+                setTopSongs(response.data.items);
+                
             })
             .catch((error) => {
                 console.error("Error fetching top songs:", error);
             });
     }, []);
 
+    useEffect(() => {
+        if (topSongs.length > 0) {
+            console.log("Top Songs Array:", topSongs);
+        }
+    }, [topSongs]); 
+
     return (
-        <div className="min-h-screen bg-gray-100 py-10 px-6">
-            <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-6">
+        <div className="h-screen bg-gradient-to-r from-green-400 to-blue-500 flex items-center justify-center">
+            <div className="bg-white rounded-lg shadow-lg p-6 max-w-4xl w-full">
                 <h1 className="text-3xl font-bold text-gray-800 mb-6">
                     Your Top 5 Songs
                 </h1>
@@ -32,7 +39,7 @@ function Dashboard() {
                                     {song.name}
                                 </div>
                                 <div className="text-sm text-gray-500">
-                                    by {song.artists.join(", ")}
+                                    by {song.artists.map(artist => artist.name).join(", ")}
                                 </div>
                             </li>
                         ))}
