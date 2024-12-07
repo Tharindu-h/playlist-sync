@@ -18,7 +18,7 @@ public class SecurityConfig {
                 )
 
                 .oauth2Login(oauth2 -> oauth2
-                        .defaultSuccessUrl("/dashboard", true)
+                        .defaultSuccessUrl("http://localhost:3000/dashboard", true)
                 )
                 .csrf().disable();
         return http.build();
