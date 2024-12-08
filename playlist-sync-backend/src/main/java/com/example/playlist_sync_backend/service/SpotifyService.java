@@ -38,17 +38,13 @@ public class SpotifyService {
     public String fetchUserTop5Songs(String userName) {
         String token = getAccessToken(userName);
         try {
-            String jsonResponse =  this.webClient.get()
+            return this.webClient.get()
                     .uri("/me/top/tracks?time_range=long_term&limit=5")
                     .header("Authorization", "Bearer " + token)
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
-            System.out.println(jsonResponse);
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode items = objectMapper.readTree(jsonResponse).get("items");
-//            return items.toString();
-            return jsonResponse;
+
         } catch (Exception e) {
             e.printStackTrace();
             return "Error fetching user top songs: " + e.getMessage();
