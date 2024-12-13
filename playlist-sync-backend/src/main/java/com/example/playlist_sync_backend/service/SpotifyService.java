@@ -28,7 +28,7 @@ public class SpotifyService {
         String token = getAccessToken(userName);
 
         return this.webClient.get()
-                .uri("/me/playlists")
+                .uri("/me/playlists?limit=50")
                 .header("Authorization", "Bearer " + token)
                 .retrieve()
                 .bodyToMono(String.class)
