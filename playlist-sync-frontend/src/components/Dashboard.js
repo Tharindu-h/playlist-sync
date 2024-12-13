@@ -42,7 +42,7 @@ function Dashboard() {
     };
 
     return (
-        <div className="h-screen bg-gradient-to-r from-green-400 to-blue-500">
+        <div className="min-h-screen bg-gradient-to-r from-green-400 to-blue-500">
             {/* Navbar */}
             <Navbar
                 onShowTopSongs={() => setShowPlaylists(false)}
@@ -66,14 +66,25 @@ function Dashboard() {
                             <ul className="space-y-4">
                                 {playlists.map((playlist, index) => (
                                     <li
-                                        key={playlist.name}
+                                        key={playlist.id}
                                         className="flex items-center space-x-4 bg-gray-50 p-4 rounded-lg shadow-md hover:bg-gray-100"
                                     >
+                                        {playlist.images && playlist.images.length > 0 ? (
+                                            <img
+                                                src={playlist.images[0].url}
+                                                alt={playlist.name}
+                                                className="w-16 h-16 rounded-md object-cover"
+                                            />
+                                        ) : (
+                                            <div className="w-16 h-16 rounded-md bg-gray-200 flex items-center justify-center">
+                                                <span className="text-gray-500 text-sm">No Image</span>
+                                            </div>
+                                        )}
                                         <div className="text-lg font-medium text-gray-700">
-                                            {index}
+                                            {playlist.name}
                                         </div>
                                         <div className="text-sm text-gray-500">
-                                            Tracks: {index}
+                                            Tracks: {playlist.tracks.total}
                                         </div>
                                     </li>
                                 ))}
@@ -94,6 +105,17 @@ function Dashboard() {
                                         key={index}
                                         className="flex items-center space-x-4 bg-gray-50 p-4 rounded-lg shadow-md hover:bg-gray-100"
                                     >
+                                        {song.album.images && song.album.images.length > 0 ? (
+                                            <img
+                                                src={song.album.images[0].url}
+                                                alt={song.album.name}
+                                                className="w-16 h-16 rounded-md object-cover"
+                                            />
+                                        ) : (
+                                            <div className="w-16 h-16 rounded-md bg-gray-200 flex items-center justify-center">
+                                                <span className="text-gray-500 text-sm">No Image</span>
+                                            </div>
+                                        )}
                                         <div className="text-lg font-medium text-gray-700">
                                             {song.name}
                                         </div>
