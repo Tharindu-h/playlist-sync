@@ -6,6 +6,7 @@ function Dashboard() {
     const [topSongs, setTopSongs] = useState([]);
     const [playlists, setPlaylists] = useState([]);
     const [playlistItems, setPlaylistItems] = useState([]);
+    const [currPlaylistName, setCurrPlaylistName]= useState("Playlist Items");
     const [showPlaylists, setShowPlaylists] = useState(false);
     const [showPlaylistItems, setShowPlaylistItems] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -49,7 +50,7 @@ function Dashboard() {
     };
 
     // Fetch items for a specific playlist
-    const fetchPlaylistItems = (playlistId) => {
+    const fetchPlaylistItems = (playlistId, playlistName) => {
         setLoading(true);
         setSelectedPlaylistId(playlistId);
         axios
@@ -57,7 +58,9 @@ function Dashboard() {
                 withCredentials: true,
             })
             .then((response) => {
+                console.log(playlistName);
                 setPlaylistItems(response.data.items);
+                setCurrPlaylistName(playlistName);
                 setNextPageUrl(response.data.next); // Save next page URL
                 setShowPlaylistItems(true);
             })
@@ -144,7 +147,7 @@ function Dashboard() {
                             Back to Playlists
                         </button>
                         <h2 className="text-2xl font-bold text-gray-800 mb-6">
-                            Playlist Items
+                            {currPlaylistName}
                         </h2>
                         {playlistItems.length > 0 ? (
                             <ul className="space-y-4">
@@ -192,7 +195,7 @@ function Dashboard() {
                                     <li
                                         key={playlist.id}
                                         className="flex items-center space-x-4 bg-gray-50 p-4 rounded-lg shadow-md hover:bg-gray-100 cursor-pointer"
-                                        onClick={() => fetchPlaylistItems(playlist.id)}
+                                        onClick={() => fetchPlaylistItems(playlist.id, playlist.name)}
                                     >
                                         {/* Playlist Image */}
                                         {playlist.images && playlist.images.length > 0 ? (
