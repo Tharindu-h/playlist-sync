@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import axios from "axios";
 import Navbar from "./Navbar";
 
@@ -9,9 +9,14 @@ function Dashboard() {
     const [showPlaylists, setShowPlaylists] = useState(false);
     const [showPlaylistItems, setShowPlaylistItems] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [loadingMore, setLoadingMore] = useState(false);
     const [error, setError] = useState(false);
+    const [nextPageUrl, setNextPageUrl] = useState(null);
+    const [selectedPlaylistId, setSelectedPlaylistId] = useState(null);
 
-    // Fetch top 5 songs on mount
+    const observerRef = useRef(null);
+
+    // Fetch Top 5 Songs
     useEffect(() => {
         axios
             .get("http://localhost:8080/api/spotify/top5songs", { withCredentials: true })
@@ -24,7 +29,7 @@ function Dashboard() {
             });
     }, []);
 
-    // Fetch all playlists
+    // Fetch Playlists
     const fetchPlaylists = () => {
         setLoading(true);
         axios
@@ -46,13 +51,14 @@ function Dashboard() {
     // Fetch items for a specific playlist
     const fetchPlaylistItems = (playlistId) => {
         setLoading(true);
+        setSelectedPlaylistId(playlistId);
         axios
             .get(`http://localhost:8080/api/spotify/playlists/${playlistId}/items`, {
                 withCredentials: true,
             })
             .then((response) => {
-                setPlaylistItems(response.data);
-                console.log(response.data)
+                setPlaylistItems(response.data.items);
+                setNextPageUrl(response.data.next); // Save next page URL
                 setShowPlaylistItems(true);
             })
             .catch((error) => {
@@ -63,6 +69,51 @@ function Dashboard() {
                 setLoading(false);
             });
     };
+
+    // Fetch Next Page of Playlist Items
+    const fetchNextPage = useCallback(() => {
+        if (!nextPageUrl || loadingMore) return;
+
+        setLoadingMore(true);
+        axios
+            .get(`http://localhost:8080/api/spotify/playlists/${selectedPlaylistId}/items?nextUrl=${encodeURIComponent(nextPageUrl)}`, {
+                withCredentials: true,
+            })
+            .then((response) => {
+                setPlaylistItems((prevItems) => [
+                    ...prevItems,
+                    ...response.data.items,
+                ]);
+                setNextPageUrl(response.data.next); // Update next page URL
+            })
+            .catch((error) => {
+                console.error("Error fetching next page:", error);
+                setError(true);
+            })
+            .finally(() => {
+                setLoadingMore(false);
+            });
+    }, [nextPageUrl, selectedPlaylistId, loadingMore]);
+
+    const containerRef = useCallback(node => {
+        if (observerRef.current) {
+            observerRef.current.disconnect();
+        }
+        observerRef.current = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting && nextPageUrl) {
+                    fetchNextPage();
+                }
+            },
+            { threshold: 0.5 } // Trigger when 50% of the element is visible
+        );
+        
+        if (node) {
+
+            observerRef.current.observe(node);
+        }
+        
+    }, [fetchNextPage, nextPageUrl]);
 
     return (
         <div className="min-h-screen bg-gradient-to-r from-green-400 to-blue-500">
@@ -95,15 +146,14 @@ function Dashboard() {
                         <h2 className="text-2xl font-bold text-gray-800 mb-6">
                             Playlist Items
                         </h2>
-                        {playlistItems.tracks.items.length > 0 ? (
+                        {playlistItems.length > 0 ? (
                             <ul className="space-y-4">
-                                {playlistItems.tracks.items.map((item, index) => (
+                                {playlistItems.map((item, index) => (
                                     <li
                                         key={index}
                                         className="flex items-center space-x-4 bg-gray-50 p-4 rounded-lg shadow-md hover:bg-gray-100"
                                     >
-                                        {/* Item Image */}
-                                        {item.track.album.images && item.track.album.images.length > 0 ? (
+                                        {item.track.album.images?.[0]?.url ? (
                                             <img
                                                 src={item.track.album.images[0].url}
                                                 alt={item.track.album.name}
@@ -114,7 +164,6 @@ function Dashboard() {
                                                 <span className="text-gray-500 text-sm">No Image</span>
                                             </div>
                                         )}
-                                        {/* Item Details */}
                                         <div>
                                             <div className="text-lg font-medium text-gray-700">
                                                 {item.track.name}
@@ -129,6 +178,8 @@ function Dashboard() {
                         ) : (
                             <p className="text-gray-500">No tracks found in this playlist.</p>
                         )}
+                        {loadingMore && <p className="text-blue-500 text-center mt-4">Loading more...</p>}
+                        <div ref={containerRef} className={`h-10 bg-transparent ${!showPlaylistItems ? "hidden" : ""}`}></div>
                     </div>
                 ) : showPlaylists ? (
                     <div>
