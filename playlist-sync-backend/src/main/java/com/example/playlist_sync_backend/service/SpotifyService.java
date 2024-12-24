@@ -57,11 +57,15 @@ public class SpotifyService {
 
     }
 
-    public String fetchPlaylistItems(String userName, String playlistID) {
+    public String fetchPlaylistItems(String userName, String playlistID, String nextUrl) {
         String token = this.getAccessToken(userName);
         try {
+            String uri = (nextUrl != null && nextUrl.startsWith("http"))
+                    ? nextUrl
+                    : "/playlists/" + playlistID + "/tracks?limit=50";
+            System.out.println(uri);
             return  this.webClient.get()
-                    .uri("/playlists/" + playlistID + "?limit=50")
+                    .uri(uri)
                     .header("Authorization", "Bearer " + token)
                     .retrieve()
                     .bodyToMono(String.class)
