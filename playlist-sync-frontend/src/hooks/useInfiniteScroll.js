@@ -1,25 +1,28 @@
-import { useEffect, useRef } from "react";
+import { useRef, useCallback } from "react";
 
 export function useInfiniteScroll(callback) {
     const observerRef = useRef(null);
 
-    useEffect(() => {
-        if (observerRef.current) observerRef.current.disconnect();
+    const setRef = useCallback((node) => {
+        if (observerRef.current) {
+            observerRef.current.disconnect();
+        }
 
+        // Create a new IntersectionObserver
         observerRef.current = new IntersectionObserver(
             (entries) => {
-                if (entries[0].isIntersecting) {
+                if (entries[0]?.isIntersecting) {
                     callback();
                 }
             },
-            { threshold: 0.5 }
+            { threshold: 0.5 } // Trigger when 50% of the element is visible
         );
 
-        return () => observerRef.current?.disconnect();
+        // Attach the observer to the node
+        if (node) {
+            observerRef.current.observe(node);
+        }
     }, [callback]);
 
-    return (node) => {
-        if (node) observerRef.current.observe(node);
-        console.log("Observing node", node);
-    };
+    return setRef;
 }

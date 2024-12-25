@@ -5,7 +5,6 @@ import PlaylistsList from "./PlaylistsList";
 import PlaylistItemsList from "./PlaylistItemsList";
 import { usePlaylists } from "../hooks/usePlaylists";
 import { usePlaylistItems } from "../hooks/usePlaylistItems";
-import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import { fetchTopSongs } from "../api";
 
 function Dashboard() {
@@ -14,16 +13,11 @@ function Dashboard() {
 
     const [topSongs, setTopSongs] = React.useState([]);
     const { playlists, getPlaylists } = usePlaylists();
-    const { playlistItems, getPlaylistItems, loadMoreItems } = usePlaylistItems();
+    const { playlistItems, getPlaylistItems, loadMoreItems, nextPageUrl } = usePlaylistItems();
 
     useEffect(() => {
         fetchTopSongs().then((res) => setTopSongs(res.data.items));
     }, []);
-
-    const infiniteRef = useInfiniteScroll(() => {
-        console.log("Triggering loadMoreItems");
-        loadMoreItems();
-    });
 
     // Handle Navigation from Navbar
     const handleNavigate = (view) => {
@@ -60,7 +54,7 @@ function Dashboard() {
                         <PlaylistItemsList
                             items={playlistItems}
                             loadMore={loadMoreItems}
-                            infiniteRef={infiniteRef}
+                            nextPageUrl={nextPageUrl}
                         />
                     </>
                 )}

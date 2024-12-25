@@ -21,9 +21,8 @@ export function usePlaylistItems() {
     };
 
     const loadMoreItems = async (playlistId) => {
-        console.log("loadMoreItems");
         
-        if (!nextPageUrl) return;
+        if (!nextPageUrl) { return};
 
         setLoading(true);
         try {
@@ -37,5 +36,5 @@ export function usePlaylistItems() {
         }
     };
 
-    return { playlistItems, getPlaylistItems, loadMoreItems, loading, error };
+    return { playlistItems, getPlaylistItems, nextPageUrl, loadMoreItems, loading, error };
 }

@@ -1,6 +1,11 @@
 import React from "react";
+import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 
-function PlaylistItemsList({ items, loadMore, infiniteRef }) {
+function PlaylistItemsList({ items, loadMore, nextPageUrl }) {
+    const infiniteRef = useInfiniteScroll(() => {
+        loadMore();
+    });
+
     return (
         <div>
             {items.length > 0 ? (
@@ -35,12 +40,8 @@ function PlaylistItemsList({ items, loadMore, infiniteRef }) {
             ) : (
                 <p className="text-gray-500">No tracks found in this playlist.</p>
             )}
-            <div
-                ref={infiniteRef}
-                className="h-40 bg-yellow-500 border-2 border-red-500"
-                >
-                    Trigger Node for Infinite Scroll
-            </div>
+            {nextPageUrl && <p className="text-blue-500 text-center mt-4">Loading more...</p>}
+            <div ref={infiniteRef} className="h-10 bg-transparent"></div>
         </div>
     );
 }
