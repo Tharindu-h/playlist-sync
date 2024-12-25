@@ -21,6 +21,8 @@ export function usePlaylistItems() {
     };
 
     const loadMoreItems = async (playlistId) => {
+        console.log("loadMoreItems");
+        
         if (!nextPageUrl) return;
 
         setLoading(true);

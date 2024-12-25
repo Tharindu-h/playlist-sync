@@ -21,6 +21,7 @@ function Dashboard() {
     }, []);
 
     const infiniteRef = useInfiniteScroll(() => {
+        console.log("Triggering loadMoreItems");
         loadMoreItems();
     });
 

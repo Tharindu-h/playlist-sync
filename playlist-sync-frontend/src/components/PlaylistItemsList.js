@@ -35,7 +35,12 @@ function PlaylistItemsList({ items, loadMore, infiniteRef }) {
             ) : (
                 <p className="text-gray-500">No tracks found in this playlist.</p>
             )}
-            <div ref={infiniteRef} className="h-10 bg-transparent"></div>
+            <div
+                ref={infiniteRef}
+                className="h-40 bg-yellow-500 border-2 border-red-500"
+                >
+                    Trigger Node for Infinite Scroll
+            </div>
         </div>
     );
 }

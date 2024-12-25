@@ -5,7 +5,6 @@ export function useInfiniteScroll(callback) {
 
     useEffect(() => {
         if (observerRef.current) observerRef.current.disconnect();
-        console.log("here")
 
         observerRef.current = new IntersectionObserver(
             (entries) => {
@@ -21,5 +20,6 @@ export function useInfiniteScroll(callback) {
 
     return (node) => {
         if (node) observerRef.current.observe(node);
+        console.log("Observing node", node);
     };
 }
