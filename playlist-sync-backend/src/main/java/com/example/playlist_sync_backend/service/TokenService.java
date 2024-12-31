@@ -41,8 +41,9 @@ public class TokenService {
 
     private String generateAppleMusicToken() {
         try {
-            // Decode and load the key from the environment variable
+            // Decode the base64 key
             byte[] keyBytes = Base64.getDecoder().decode(privateKeyEnv);
+
             PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
             PrivateKey privateKey = KeyFactory.getInstance("EC").generatePrivate(spec);
 
