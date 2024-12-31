@@ -39,7 +39,7 @@ public class TokenService {
         return cachedToken;
     }
 
-    private String generateAppleMusicToken() {
+    public String generateAppleMusicToken() {
         try {
             // Decode the base64 key
             byte[] keyBytes = Base64.getDecoder().decode(privateKeyEnv);

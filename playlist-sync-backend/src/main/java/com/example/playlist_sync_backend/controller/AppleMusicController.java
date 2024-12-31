@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/applemusic")
+@RequestMapping("/api/applemusi")// temp change not sure what to do here yet
 public class AppleMusicController {
     private final AppleMusicService appleMusicService;
 
