@@ -1,12 +1,15 @@
 import React from "react";
+import useAppleMusic from "../hooks/useAppleMusic";
 
 function HomePage() {
+    const { login: appleMusicLogin } = useAppleMusic();
+
     const handleSpotifyLogin = () => {
         window.location.href = "http://localhost:8080/login";
     };
 
     const handleAppleMusicLogin = () => {
-        window.location.href = "/applemusic";
+        appleMusicLogin();
     };
 
     return (
