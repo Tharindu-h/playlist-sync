@@ -6,12 +6,15 @@ function PlaylistsList({ playlists, onSelect }) {
             <h2 className="text-2xl font-bold text-gray-800 mb-6">Your Playlists</h2>
             {playlists.length > 0 ? (
                 <ul className="space-y-4">
-                    {playlists.map((playlist) => (
+                    {playlists.map((playlist, index) => (
                         <li
                             key={playlist.id}
                             className="flex items-center space-x-4 bg-gray-50 p-4 rounded-lg shadow-md hover:bg-gray-100 cursor-pointer"
                             onClick={() => onSelect(playlist.id, playlist.name)}
                         >
+                            <span className="text-lg font-bold text-gray-700">
+                                {index + 1}.
+                            </span>
                             {playlist.images?.[0]?.url ? (
                                 <img
                                     src={playlist.images[0].url}
