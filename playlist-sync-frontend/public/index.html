@@ -6,7 +6,7 @@
     <title>Playlist Sync</title>
 
     <!-- Apple MusicKit Script -->
-    <script src="https://js-cdn.music.apple.com/musickit/v1/musickit.js"></script>
+    <script src="https://js-cdn.music.apple.com/musickit/v3/musickit.js" data-web-components async></script>
     <script>
       document.addEventListener('DOMContentLoaded', () => {
         fetch('http://localhost:8080/api/applemusic/token')
