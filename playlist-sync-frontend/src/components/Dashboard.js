@@ -36,7 +36,7 @@ function Dashboard() {
         <div className="min-h-screen bg-gradient-to-r from-green-400 to-blue-500">
             <Navbar onNavigate={handleNavigate} />
             <div className="container mx-auto p-6">
-                {view === 'TOP_SONGS' && <TopSongsList songs={topSongs} />}
+                {view === 'TOP_SONGS' && <TopSongsList songs={topSongs} platform={"spotify"}/>}
                 {view === 'PLAYLISTS' && (
                     <PlaylistsList playlists={playlists} onSelect={handlePlaylistSelect} />
                 )}
