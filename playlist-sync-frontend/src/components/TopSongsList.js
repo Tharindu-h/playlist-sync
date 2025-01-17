@@ -1,7 +1,6 @@
 import React from "react";
 
 function TopSongsList({ songs, platform }) {
-  console.log(songs)
     return (
         <div>
             <h2 className="text-2xl font-bold text-gray-800 mb-6">Your Top 5 Songs</h2>

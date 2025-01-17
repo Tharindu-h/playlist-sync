@@ -10,7 +10,7 @@ export default function useAppleMusic() {
     const [userToken, setUserToken] = useState(() => {
         return localStorage.getItem("appleMusicToken") || null;
     });
-    const [topSongs, setTopSongs] = useState([]);
+    const [recentSongs, setRecentSongs] = useState([]);
     const [userPlaylists, setUserPlaylists] = useState([]);
     const navigate = useNavigate();
 
@@ -58,7 +58,7 @@ export default function useAppleMusic() {
             await music.unauthorize();
             setIsLoggedIn(false);
             setUserToken(null);
-            setTopSongs([]);
+            setRecentSongs([]);
             localStorage.removeItem("appleMusicToken"); // Clear stored token
             console.log("Logged out of Apple Music");
         } catch (error) {
@@ -66,14 +66,15 @@ export default function useAppleMusic() {
         }
     };
 
-    const fetchTopSongs = useCallback(async () => {
+    const fetchRecentSongs = useCallback(async () => {
         try {
             const music = MusicKit.getInstance();
-            const response = await music.api.music(`/v1/me/recent/played/tracks?limit=5`);
-            setTopSongs(response.data || []);
-            console.log("Fetched Top Songs:", response.data);
+            const response = await music.api.music(`/v1/me/recent/played/tracks?types=songs&limit=5`);
+            const songs = response.data?.data?.length ? response.data.data : []; 
+            setRecentSongs(songs);
         } catch (error) {
             console.error("Failed to fetch top songs:", error);
+            setRecentSongs([]); // Reset to empty array on error
         }
     }, []);
 
@@ -88,5 +89,5 @@ export default function useAppleMusic() {
         }
     });
 
-    return { isLoggedIn, userToken, login, logout, topSongs, fetchTopSongs, userPlaylists, fetchUserPlaylists };
+    return { isLoggedIn, userToken, login, logout, recentSongs, fetchRecentSongs, userPlaylists, fetchUserPlaylists };
 }
