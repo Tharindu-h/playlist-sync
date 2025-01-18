@@ -1,7 +1,7 @@
 import React from "react";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 
-function PlaylistItemsList({ items, loadMore, nextPageUrl }) {
+function PlaylistItemsList({ items, loadMore, nextPageUrl, platform }) {
     const infiniteRef = useInfiniteScroll(() => {
         loadMore();
     });
@@ -14,24 +14,51 @@ function PlaylistItemsList({ items, loadMore, nextPageUrl }) {
                         <li
                             key={index}
                             className="flex items-center space-x-4 bg-gray-50 p-4 rounded-lg shadow-md hover:bg-gray-100"
-                        >
-                            {item.track.album.images?.[0]?.url ? (
+                        >   
+                            <span className="text-lg font-bold text-gray-700">
+                                {index + 1}.
+                            </span>
+                            {platform === "spotify" ? (
+                                item.track.album.images?.[0]?.url ? (
+                                  <img
+                                      src={item.track.album.images[0].url}
+                                      alt={item.track.album.name}
+                                      className="w-16 h-16 rounded-md object-cover"
+                                  />
+                                ) : (
+                                  <div className="w-16 h-16 rounded-md bg-gray-200 flex items-center justify-center">
+                                      <span className="text-gray-500 text-sm">No Image</span>
+                                  </div>
+                                )
+                            ) : platform === "apple" ? (
+                              item.attributes.artwork?.url ? (
                                 <img
-                                    src={item.track.album.images[0].url}
-                                    alt={item.track.album.name}
+                                    src={item.attributes.artwork.url.replace("{w}x{h}", "100x100")}
+                                    alt={item.attributes.name}
                                     className="w-16 h-16 rounded-md object-cover"
                                 />
-                            ) : (
-                                <div className="w-16 h-16 rounded-md bg-gray-200 flex items-center justify-center">
-                                    <span className="text-gray-500 text-sm">No Image</span>
-                                </div>
-                            )}
+                                ) : (
+                                  <div className="w-16 h-16 rounded-md bg-gray-200 flex items-center justify-center">
+                                      <span className="text-gray-500 text-sm">No Image</span>
+                                  </div>
+                                )
+                            ) : null}
                             <div>
                                 <div className="text-lg font-medium text-gray-700">
-                                    {item.track.name}
+                                    { platform === "spotify" 
+                                    ? item.track.name
+                                    : platform === "apple"
+                                    ? item.attributes.name
+                                    : "Error getting song name"}
                                 </div>
                                 <div className="text-sm text-gray-500">
-                                    by {item.track.artists.map((artist) => artist.name).join(", ")}
+                                    by 
+                                    { platform === "spotify"
+                                    ? ` ${item.track.artists.map((artist) => artist.name).join(", ")}`
+                                    : platform === "apple"
+                                    ? ` ${item.attributes.artistName}`
+                                    : ""
+                                    }
                                 </div>
                             </div>
                         </li>

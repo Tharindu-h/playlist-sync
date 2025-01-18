@@ -55,6 +55,7 @@ function Dashboard() {
                             items={playlistItems}
                             loadMore={loadMoreItems}
                             nextPageUrl={nextPageUrl}
+                            platform={"spotify"}
                         />
                     </>
                 )}

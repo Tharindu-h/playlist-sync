@@ -74,6 +74,7 @@ function AppleMusicDashboard() {
                             items={playlistItems}
                             loadMore={loadMoreItems}
                             nextPageUrl={nextPageUrl}
+                            platform={"apple"}
                         />
                     </>
                 )}

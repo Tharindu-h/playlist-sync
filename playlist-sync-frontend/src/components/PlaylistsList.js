@@ -27,7 +27,7 @@ function PlaylistsList({ playlists, onSelect, platform }) {
                                     <span className="text-gray-500 text-sm">No Image</span>
                                 </div>
                               )
-                            ): platform === "apple" ? (
+                            ) : platform === "apple" ? (
                               playlist.attributes?.artwork?.url ? (
                                 <img
                                     src={playlist.attributes.artwork.url.replace("{w}x{h}", "100x100")}

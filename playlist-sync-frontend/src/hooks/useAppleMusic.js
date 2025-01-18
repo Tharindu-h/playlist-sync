@@ -12,6 +12,9 @@ export default function useAppleMusic() {
     });
     const [recentSongs, setRecentSongs] = useState([]);
     const [userPlaylists, setUserPlaylists] = useState([]);
+    const [playlistItems, setPlaylistItems] = useState([]);
+    const [nextPageUrl, setNextPageUrl] = useState(null);
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     // Initialize MusicKit on load
@@ -89,5 +92,41 @@ export default function useAppleMusic() {
         }
     });
 
-    return { isLoggedIn, userToken, login, logout, recentSongs, fetchRecentSongs, userPlaylists, fetchUserPlaylists };
+    const fetchPlaylistItems = useCallback(async (playlistId) => {
+      try {
+          setLoading(true);
+          const music = MusicKit.getInstance();
+          const response = await music.api.music(`/v1/me/library/playlists/${playlistId}/tracks`);
+          const items = response.data?.data?.length ? response.data.data : []; 
+          const next = response.data?.next || null;
+          console.log(response.data);
+          setPlaylistItems(items);
+          setNextPageUrl(next);
+      } catch (error) {
+          console.error("Failed to fetch playlist items: ", error);
+      } finally {
+          setLoading(false);
+      }
+    }, []);
+
+    const loadMoreItems = useCallback(async () => {
+      if (!nextPageUrl) return;
+
+      try {
+          setLoading(true);
+          const music = MusicKit.getInstance();
+          const response = await music.api.music(nextPageUrl);
+          const items = response.data?.data || [];
+          const next = response.data?.next || null;
+          setPlaylistItems((prev) => [...prev, ...items]);
+          setNextPageUrl(next);
+      } catch (error) {
+          console.error("Failed to load more playlist items: ", error);
+      } finally {
+          setLoading(false);
+      }
+    }, [nextPageUrl]);
+
+    return { isLoggedIn, userToken, login, logout, recentSongs, fetchRecentSongs, userPlaylists, fetchUserPlaylists, 
+      fetchPlaylistItems, playlistItems, loadMoreItems, nextPageUrl, loading };
 }
