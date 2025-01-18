@@ -99,7 +99,6 @@ export default function useAppleMusic() {
           const response = await music.api.music(`/v1/me/library/playlists/${playlistId}/tracks`);
           const items = response.data?.data?.length ? response.data.data : []; 
           const next = response.data?.next || null;
-          console.log(response.data);
           setPlaylistItems(items);
           setNextPageUrl(next);
       } catch (error) {

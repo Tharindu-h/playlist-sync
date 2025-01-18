@@ -44,7 +44,7 @@ function Dashboard() {
                     <>
                         <button
                             onClick={() => setView('PLAYLISTS')}
-                            className="bg-white text-green-600 font-medium py-2 px-4 rounded-md shadow-md hover:bg-pink-500 hover:text-white transition duration-300 mb-4"
+                            className="bg-white text-green-600 font-bold py-2 px-4 rounded-md shadow-md hover:bg-pink-500 hover:text-white transition duration-300 mb-4"
                         >
                             ← Back to Playlists
                         </button>
