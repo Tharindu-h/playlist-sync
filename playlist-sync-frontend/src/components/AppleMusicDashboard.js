@@ -57,7 +57,7 @@ function AppleMusicDashboard() {
                     </>
                 )}
                 {view === "PLAYLISTS" && (
-                    <PlaylistsList playlists={userPlaylists} onSelect={handlePlaylistSelect} />
+                    <PlaylistsList playlists={userPlaylists} onSelect={handlePlaylistSelect} platform={"apple"} />
                 )}
                 {view === "PLAYLIST_ITEMS" && (
                     <>

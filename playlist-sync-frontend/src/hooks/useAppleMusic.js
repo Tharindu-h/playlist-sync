@@ -82,8 +82,8 @@ export default function useAppleMusic() {
         try {
             const music = MusicKit.getInstance();
             const response = await music.api.music(`/v1/me/library/playlists`);
-            setUserPlaylists(response.data || []);
-            console.log("fetched user playlists:", response.data);
+            const playlists = response.data?.data?.length ? response.data.data : []; 
+            setUserPlaylists(playlists);
         } catch (error) {
             console.error("Failed to fetch user playlists: ", error);
         }

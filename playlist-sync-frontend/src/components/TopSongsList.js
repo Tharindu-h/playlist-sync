@@ -3,7 +3,14 @@ import React from "react";
 function TopSongsList({ songs, platform }) {
     return (
         <div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">Your Top 5 Songs</h2>
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">
+              
+              {platform === "spotify"
+                  ? "Your Top 5 Songs"
+                  : platform === "apple"
+                  ? "Your Top 5 Recent songs"
+                  : ""}
+              </h2>
             {songs.length > 0 ? (
                 <ul className="space-y-4">
                     {songs.map((song, index) => (
@@ -52,7 +59,7 @@ function TopSongsList({ songs, platform }) {
                                         ? `by ${song.artists.map((artist) => artist.name).join(", ")}`
                                         : platform === "apple"
                                         ? `by ${song.attributes?.artistName}`
-                                        : ""}
+                                        : "Error getting song name"}
                                 </div>
                             </div>
                         </li>

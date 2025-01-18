@@ -1,6 +1,6 @@
 import React from "react";
 
-function PlaylistsList({ playlists, onSelect }) {
+function PlaylistsList({ playlists, onSelect, platform }) {
     return (
         <div>
             <h2 className="text-2xl font-bold text-gray-800 mb-6">Your Playlists</h2>
@@ -15,23 +15,44 @@ function PlaylistsList({ playlists, onSelect }) {
                             <span className="text-lg font-bold text-gray-700">
                                 {index + 1}.
                             </span>
-                            {playlist.images?.[0]?.url ? (
+                            {platform === "spotify" ? (
+                              playlist.images?.[0]?.url ? (
                                 <img
                                     src={playlist.images[0].url}
                                     alt={playlist.name}
                                     className="w-16 h-16 rounded-md object-cover"
                                 />
-                            ) : (
+                              ) : (
                                 <div className="w-16 h-16 rounded-md bg-gray-200 flex items-center justify-center">
                                     <span className="text-gray-500 text-sm">No Image</span>
                                 </div>
-                            )}
+                              )
+                            ): platform === "apple" ? (
+                              playlist.attributes?.artwork?.url ? (
+                                <img
+                                    src={playlist.attributes.artwork.url.replace("{w}x{h}", "100x100")}
+                                    alt={playlist.attributes.name}
+                                    className="w-16 h-16 rounded-md object-cover"
+                                />
+                              ) : (
+                                <div className="w-16 h-16 rounded-md bg-gray-200 flex items-center justify-center">
+                                    <span className="text-gray-500 text-sm">No Image</span>
+                                </div>
+                              )
+                            ) : null}
                             <div>
                                 <div className="text-lg font-medium text-gray-700">
-                                    {playlist.name}
+                                    {platform === "spotify" 
+                                    ? playlist.name
+                                    : platform === "apple"
+                                    ? playlist.attributes?.name
+                                    : "Error getting playlist name"}
                                 </div>
                                 <div className="text-sm text-gray-500">
-                                    Tracks: {playlist.tracks.total}
+                                    {platform === "spotify" 
+                                    ? `Tracks: ${playlist.tracks.total}`
+                                    : ""
+                                    }
                                 </div>
                             </div>
                         </li>

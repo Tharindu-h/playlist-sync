@@ -38,7 +38,7 @@ function Dashboard() {
             <div className="container mx-auto p-6">
                 {view === 'TOP_SONGS' && <TopSongsList songs={topSongs} platform={"spotify"}/>}
                 {view === 'PLAYLISTS' && (
-                    <PlaylistsList playlists={playlists} onSelect={handlePlaylistSelect} />
+                    <PlaylistsList playlists={playlists} onSelect={handlePlaylistSelect} platform={"spotify"}/>
                 )}
                 {view === 'PLAYLIST_ITEMS' && (
                     <>
