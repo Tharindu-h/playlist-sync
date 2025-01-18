@@ -18,6 +18,9 @@ function TopSongsList({ songs, platform }) {
                             key={index}
                             className="flex items-center space-x-4 bg-gray-50 p-4 rounded-lg shadow-md hover:bg-gray-100"
                         >
+                            <span className="text-lg font-bold text-gray-700">
+                                {index + 1}.
+                            </span>
                             {platform === "spotify" ? (
                                 // Spotify Image
                                 song.album.images?.[0]?.url ? (
