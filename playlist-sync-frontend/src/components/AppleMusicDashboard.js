@@ -63,7 +63,7 @@ function AppleMusicDashboard() {
                     <>
                         <button
                             onClick={() => setView("PLAYLISTS")}
-                            className="text-pink-500 font-medium mb-4 hover:underline"
+                            className="bg-white text-pink-500 font-medium py-2 px-4 rounded-md shadow-md hover:bg-pink-500 hover:text-white transition duration-300 mb-4"
                         >
                             ← Back to Playlists
                         </button>
