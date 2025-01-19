@@ -70,8 +70,8 @@ export default function useAppleMusic() {
             localStorage.setItem("appleMusicToken", token); // Persist token
             console.log("Apple Music Token:", token);
 
-            // Redirect to Apple Music Dashboard
-            navigate("/apple-music-dashboard");
+            // Redirect to Dashboard
+            navigate("/dashboard");
         } catch (error) {
             console.error("Failed to login with Apple Music:", error);
         }
