@@ -8,23 +8,27 @@
     <!-- Apple MusicKit Script -->
     <script src="https://js-cdn.music.apple.com/musickit/v3/musickit.js" data-web-components async></script>
     <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        fetch('http://localhost:8080/api/applemusic/token')
-          .then(response => response.text())
-          .then(developerToken => {
-            MusicKit.configure({
-              developerToken: developerToken,
-              app: {
-                name: 'Playlist Sync',
-                build: '1.0.0',
-              },
+      window.musicKitReady = new Promise((resolve, reject) => {
+        document.addEventListener('DOMContentLoaded', () => {
+          fetch('http://localhost:8080/api/applemusic/token')
+            .then(response => response.text())
+            .then(developerToken => {
+              MusicKit.configure({
+                developerToken: developerToken,
+                app: {
+                  name: 'Playlist Sync',
+                  build: '1.0.0',
+                },
+              });
+              console.log('MusicKit configured successfully.');
+              resolve(); // Resolve when MusicKit is configured
+            })
+            .catch(error => {
+              console.error('Failed to configure MusicKit:', error);
+              reject(error); // Reject if configuration fails
             });
-            console.log('MusicKit configured successfully.');
-          })
-          .catch(error => {
-            console.error('Failed to configure MusicKit:', error);
-          });
-      });
+        });
+      });  
     </script>
   </head>
   <body>

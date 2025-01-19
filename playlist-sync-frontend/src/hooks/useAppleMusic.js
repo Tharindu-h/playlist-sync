@@ -15,29 +15,51 @@ export default function useAppleMusic() {
     const [playlistItems, setPlaylistItems] = useState([]);
     const [nextPageUrl, setNextPageUrl] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [musicKitReady, setMusicKitReady] = useState(false);
     const navigate = useNavigate();
 
+    
     // Initialize MusicKit on load
     useEffect(() => {
         const initializeMusicKit = async () => {
-            if (!window.MusicKit) {
-                console.error("MusicKit is not loaded.");
-                return;
-            }
-
             try {
-                const music = MusicKit.getInstance();
+                console.log("here")
+                // Wait for MusicKit to be configured
+                await window.musicKitReady;
+                console.log("MusicKit is ready to use.");
+            
+                // Wait for MusicKit instance to become available
+                const waitForInstance = () =>
+                    new Promise((resolve, reject) => {
+                        const interval = setInterval(() => {
+                            const music = MusicKit.getInstance();
+                            if (music) {
+                                clearInterval(interval);
+                                resolve(music);
+                            }
+                        }, 100); // Check every 100ms
+                        setTimeout(() => {
+                            clearInterval(interval);
+                            reject(new Error("MusicKit instance did not become ready in time."));
+                        }, 5000); // Timeout after 5 seconds
+                    });
+                  
+                const music = await waitForInstance();
+                console.log("MusicKit instance is available.");
+                  
                 if (userToken) {
                     await music.authorize();
                     console.log("Apple Music re-authorized with stored token");
                 }
+                setMusicKitReady(true); // Mark MusicKit as ready
             } catch (error) {
                 console.error("Failed to re-authorize Apple Music:", error);
             }
         };
-
+      
         initializeMusicKit();
     }, [userToken]);
+
 
     const login = async () => {
         try {
@@ -70,6 +92,7 @@ export default function useAppleMusic() {
     };
 
     const fetchRecentSongs = useCallback(async () => {
+        if (!musicKitReady) return;
         try {
             const music = MusicKit.getInstance();
             const response = await music.api.music(`/v1/me/recent/played/tracks?types=songs&limit=5`);
@@ -79,9 +102,10 @@ export default function useAppleMusic() {
             console.error("Failed to fetch top songs:", error);
             setRecentSongs([]); // Reset to empty array on error
         }
-    }, []);
+    }, [musicKitReady]);
 
     const fetchUserPlaylists = useCallback(async () => {
+        if (!musicKitReady) return;
         try {
             const music = MusicKit.getInstance();
             const response = await music.api.music(`/v1/me/library/playlists`);
@@ -90,9 +114,10 @@ export default function useAppleMusic() {
         } catch (error) {
             console.error("Failed to fetch user playlists: ", error);
         }
-    });
+    }, [musicKitReady]);
 
     const fetchPlaylistItems = useCallback(async (playlistId) => {
+      if (!musicKitReady) return;
       try {
           setLoading(true);
           const music = MusicKit.getInstance();
@@ -106,10 +131,10 @@ export default function useAppleMusic() {
       } finally {
           setLoading(false);
       }
-    }, []);
+    }, [musicKitReady]);
 
     const loadMoreItems = useCallback(async () => {
-      if (!nextPageUrl) return;
+      if (!nextPageUrl || !musicKitReady) return;
 
       try {
           setLoading(true);
@@ -124,7 +149,7 @@ export default function useAppleMusic() {
       } finally {
           setLoading(false);
       }
-    }, [nextPageUrl]);
+    }, [nextPageUrl, musicKitReady]);
 
     return { isLoggedIn, userToken, login, logout, recentSongs, fetchRecentSongs, userPlaylists, fetchUserPlaylists, 
       fetchPlaylistItems, playlistItems, loadMoreItems, nextPageUrl, loading };
