@@ -39,4 +39,8 @@ public class SpotifyController {
         return this.spotifyService.fetchPlaylistItems(user.getName(), playlistId, nextUrl);
     }
 
+    @GetMapping("/isLoggedIn")
+    public boolean isLoggedIn(@AuthenticationPrincipal OAuth2User user) {
+        return user != null;
+    }
 }

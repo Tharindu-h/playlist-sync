@@ -13,7 +13,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/hello", "/login", "/oauth2/**", "/api/applemusic/token").permitAll() // Allow public access to /api/hello
+                        .requestMatchers("/api/hello", "/login", "/oauth2/**",
+                                "/api/applemusic/token", "/api/spotify/isLoggedIn").permitAll() // Allow public access to /api/hello
                         .anyRequest().authenticated() // Secure all other endpoints
                 )
 
