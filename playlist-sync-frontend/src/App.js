@@ -9,7 +9,7 @@ function App() {
     return (
         <Router>
             <Routes>
-                <Route path="/" element={<HomePage />} />
+                <Route path="/" element={<HomePage showSpotifyLogin={true} showAppleMusicLogin={true} />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/spotify-dashboard" element={<SpotifyDashboard />} />
                 <Route path="apple-music-dashboard" element={<AppleMusicDashboard />}></Route>
