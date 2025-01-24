@@ -27,7 +27,6 @@ export default function useAppleMusic() {
             try {
                 // Wait for MusicKit to be configured
                 await window.musicKitReady;
-                console.log("MusicKit is ready to use.");
             
                 // Wait for MusicKit instance to become available
                 const waitForInstance = () =>
@@ -46,11 +45,9 @@ export default function useAppleMusic() {
                     });
                   
                 const music = await waitForInstance();
-                console.log("MusicKit instance is available.");
                   
                 if (userToken) {
                     await music.authorize();
-                    console.log("Apple Music re-authorized with stored token");
                     loginToAppleMusic();
                 }
                 setMusicKitReady(true); // Mark MusicKit as ready
