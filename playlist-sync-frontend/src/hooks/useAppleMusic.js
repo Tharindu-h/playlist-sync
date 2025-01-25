@@ -1,6 +1,7 @@
 /* global MusicKit */
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function useAppleMusic() {
     const [isLoggedIn, setIsLoggedIn] = useState(() => {
@@ -17,16 +18,15 @@ export default function useAppleMusic() {
     const [loading, setLoading] = useState(false);
     const [musicKitReady, setMusicKitReady] = useState(false);
     const navigate = useNavigate();
+    const { loginToAppleMusic } = useAuth();
 
     
     // Initialize MusicKit on load
     useEffect(() => {
         const initializeMusicKit = async () => {
             try {
-                console.log("here")
                 // Wait for MusicKit to be configured
                 await window.musicKitReady;
-                console.log("MusicKit is ready to use.");
             
                 // Wait for MusicKit instance to become available
                 const waitForInstance = () =>
@@ -45,11 +45,10 @@ export default function useAppleMusic() {
                     });
                   
                 const music = await waitForInstance();
-                console.log("MusicKit instance is available.");
                   
                 if (userToken) {
                     await music.authorize();
-                    console.log("Apple Music re-authorized with stored token");
+                    loginToAppleMusic();
                 }
                 setMusicKitReady(true); // Mark MusicKit as ready
             } catch (error) {
@@ -69,9 +68,10 @@ export default function useAppleMusic() {
             setIsLoggedIn(true);
             localStorage.setItem("appleMusicToken", token); // Persist token
             console.log("Apple Music Token:", token);
+            loginToAppleMusic();
 
-            // Redirect to Apple Music Dashboard
-            navigate("/apple-music-dashboard");
+            // Redirect to Dashboard
+            navigate("/dashboard");
         } catch (error) {
             console.error("Failed to login with Apple Music:", error);
         }

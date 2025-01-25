@@ -13,3 +13,5 @@ export const fetchPlaylistItems = (playlistId) => API.get(`/playlists/${playlist
 
 export const fetchNextPage = (playlistId, nextUrl) =>
     API.get(`/playlists/${playlistId}/items?nextUrl=${encodeURIComponent(nextUrl)}`);
+
+export const fetchIsLoggedIn = () => API.get("/isLoggedIn");

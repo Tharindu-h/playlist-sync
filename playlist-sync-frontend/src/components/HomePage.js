@@ -1,7 +1,7 @@
 import React from "react";
 import useAppleMusic from "../hooks/useAppleMusic";
 
-function HomePage() {
+function HomePage({showSpotifyLogin=false, showAppleMusicLogin=false}) {
     const { login: appleMusicLogin } = useAppleMusic();
 
     const handleSpotifyLogin = () => {
@@ -22,16 +22,20 @@ function HomePage() {
                     Sync your favorite Spotify and Apple Music playlists across platforms.
                 </p>
                 <div className="flex flex-col space-y-4">
+                  {showSpotifyLogin ? (
                     <button
-                        onClick={handleSpotifyLogin}
-                        className="bg-white text-green-500 font-semibold py-3 px-6 rounded-md shadow-lg hover:bg-green-500 hover:text-white transition duration-300"
+                      onClick={handleSpotifyLogin}
+                      className="bg-white text-green-500 font-semibold py-3 px-6 rounded-md shadow-lg hover:bg-green-500 hover:text-white transition duration-300"
                     >
-                        Login with Spotify
+                      Login with Spotify
                     </button>
-                    
+                  ) 
+                  : ""}
+
+                  {showAppleMusicLogin ? (
                     <button
-                        onClick={handleAppleMusicLogin}
-                        className="bg-black text-white font-semibold py-3 px-6 rounded-md shadow-lg hover:bg-gray-900 transition duration-300 flex items-center justify-center space-x-2"
+                    onClick={handleAppleMusicLogin}
+                    className="bg-black text-white font-semibold py-3 px-6 rounded-md shadow-lg hover:bg-gray-900 transition duration-300 flex items-center justify-center space-x-2"
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -42,6 +46,8 @@ function HomePage() {
                         </svg>
                         <span>Login with Apple Music</span>
                     </button>
+                  ) : ""}    
+
                 </div>
             </div>
         </div>
