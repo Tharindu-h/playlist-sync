@@ -29,8 +29,8 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: | 
-      cd playlist-sync-backend
-      mvn -B package --file pom.xml
+        cd playlist-sync-backend
+        mvn -B package --file pom.xml
 
     - name: Verify build success
       run: |
