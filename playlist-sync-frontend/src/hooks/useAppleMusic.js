@@ -57,7 +57,7 @@ export default function useAppleMusic() {
         };
       
         initializeMusicKit();
-    }, [userToken]);
+    }, [userToken, loginToAppleMusic]);
 
 
     const login = async () => {

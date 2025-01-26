@@ -8,7 +8,6 @@ import useAppleMusic from "../hooks/useAppleMusic";
 function AppleMusicDashboard() {
     const {
         isLoggedIn,
-        login,
         recentSongs,
         fetchRecentSongs,
         userPlaylists,
