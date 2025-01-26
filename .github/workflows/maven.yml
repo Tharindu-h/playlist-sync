@@ -34,7 +34,7 @@ jobs:
 
     - name: Verify build success
       run: |
-        if [ ! -f "playlist-sync-backend/target/*.jar" ]; then
+        if ! ls playlist-sync-backend/target/*.jar > /dev/null 2>&1; then
           echo "Build failed: No JAR file generated."
           exit 1
         fi
