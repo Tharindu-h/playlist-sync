@@ -15,3 +15,7 @@ export const fetchNextPage = (playlistId, nextUrl) =>
     API.get(`/playlists/${playlistId}/items?nextUrl=${encodeURIComponent(nextUrl)}`);
 
 export const fetchIsLoggedIn = () => API.get("/isLoggedIn");
+
+// export const transferPlaylist = (playlistName, playlistItems)
+export const transferPlaylist = (playlistName, playlistItems) =>
+    API.post("/transfer-to-spotify", { playlistName, songs: playlistItems });

@@ -4,6 +4,7 @@ import TopSongsList from "./TopSongsList";
 import PlaylistsList from "./PlaylistsList";
 import PlaylistItemsList from "./PlaylistItemsList";
 import useAppleMusic from "../hooks/useAppleMusic";
+import usePlaylistTransfer from "../hooks/usePlaylistTransfer";
 
 function AppleMusicDashboard() {
     const {
@@ -17,6 +18,8 @@ function AppleMusicDashboard() {
         loadMoreItems,
         nextPageUrl,
     } = useAppleMusic();
+
+    const { transferPlaylistToSpotify, transferLoading, error, success } = usePlaylistTransfer();
 
     const [view, setView] = useState("TOP_SONGS"); // Default view
     const [currentPlaylistName, setCurrentPlaylistName] = useState("");
@@ -68,12 +71,10 @@ function AppleMusicDashboard() {
                                 ← Back to Playlists
                             </button>
                             <button
-                                onClick={() => {
-                                    // Add functionality here later
-                                }}
+                                onClick={() => transferPlaylistToSpotify(currentPlaylistName, playlistItems)}
                                 className="bg-white text-green-500 font-bold py-2 px-4 rounded-md shadow-md hover:bg-green-500 hover:text-white transition duration-300"
                             >
-                                Transfer to Apple Music
+                                {loading ? "Transferring..." : "Transfer to Spotify"}
                             </button>
                         </div>
                         <h2 className="text-2xl font-bold text-gray-800 mb-4">
