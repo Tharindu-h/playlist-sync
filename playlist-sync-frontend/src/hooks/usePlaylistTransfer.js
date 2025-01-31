@@ -3,13 +3,15 @@ import { transferPlaylist } from "../api";
 
 export default function usePlaylistTransfer() {
     const [transferLoading, setTransferLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const [success, setSuccess] = useState(false);
+    const [transferError, setTransferError] = useState(null);
+    const [transferSuccess, setTransferSuccess] = useState(false);
+    const [newPlaylistId, setNewPlaylistId] = useState(null);
 
     const transferPlaylistToSpotify = async (playlistName, playlistItems) => {
-      setTransferLoading(true);
-        setError(null);
-        setSuccess(false);
+        setTransferLoading(true);
+        setTransferError(null);
+        setTransferSuccess(false);
+        
 
         try {
             // Prepare data for backend
@@ -21,22 +23,21 @@ export default function usePlaylistTransfer() {
                 appleMusicId: song.id
             }));
 
-            const response = await transferPlaylist(playlistName, songsData);
-
-            const result = await response.json();
-            if (response.ok) {
-                setSuccess(true);
-                console.log("Playlist transferred successfully:", result);
-            } else {
-                throw new Error(result.message || "Failed to transfer playlist");
+            const response = await transferPlaylist(playlistName, songsData); // this returns the newly created spotify playlist id
+            // get new playlist songs using usePlaylistItems()
+            // set the view in spotify dashboard to PLAYLIST_ITEMS
+            // display new playlist
+            if (response.data.playlistId) {
+              setNewPlaylistId(response.data.playlistId);
+              setTransferSuccess(true);
             }
         } catch (err) {
             console.error("Error transferring playlist:", err);
-            setError(err.message);
+            setTransferError(err.message);
         } finally {
           setTransferLoading(false);
         }
     };
 
-    return { transferPlaylistToSpotify, transferLoading, error, success };
+    return { transferPlaylistToSpotify, transferLoading, transferError, setTransferError, transferSuccess };
 }

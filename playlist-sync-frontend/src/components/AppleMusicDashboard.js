@@ -19,7 +19,7 @@ function AppleMusicDashboard() {
         nextPageUrl,
     } = useAppleMusic();
 
-    const { transferPlaylistToSpotify, transferLoading, error, success } = usePlaylistTransfer();
+    const { transferPlaylistToSpotify, transferLoading, transferError, setTransferError, transferSuccess } = usePlaylistTransfer();
 
     const [view, setView] = useState("TOP_SONGS"); // Default view
     const [currentPlaylistName, setCurrentPlaylistName] = useState("");
@@ -35,7 +35,10 @@ function AppleMusicDashboard() {
     // Handle Navigation from Navbar
     const handleNavigate = (view) => {
         setView(view);
-        if (view === "PLAYLISTS") fetchUserPlaylists();
+        if (view === "PLAYLISTS") {
+          fetchUserPlaylists();
+          setTransferError(null);
+        }
     };
 
     // Handle Playlist Selection
@@ -43,6 +46,7 @@ function AppleMusicDashboard() {
         fetchPlaylistItems(playlistId);
         setCurrentPlaylistName(playlistName);
         setView("PLAYLIST_ITEMS");
+        setTransferError(null);
     };
 
     return (
@@ -80,6 +84,11 @@ function AppleMusicDashboard() {
                         <h2 className="text-2xl font-bold text-gray-800 mb-4">
                             {currentPlaylistName}
                         </h2>
+                        {transferError !== null && (
+                            <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 rounded-md shadow-md">
+                                <p className="font-semibold">⚠️ Error transferring playlist: {transferError}</p>
+                            </div>
+                        )}
                         <PlaylistItemsList
                             items={playlistItems}
                             loadMore={loadMoreItems}
