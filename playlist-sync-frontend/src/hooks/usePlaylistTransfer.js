@@ -4,13 +4,11 @@ import { transferPlaylist } from "../api";
 export default function usePlaylistTransfer() {
     const [transferLoading, setTransferLoading] = useState(false);
     const [transferError, setTransferError] = useState(null);
-    const [transferSuccess, setTransferSuccess] = useState(false);
     const [newPlaylistId, setNewPlaylistId] = useState(null);
 
     const transferPlaylistToSpotify = async (playlistName, playlistItems) => {
         setTransferLoading(true);
         setTransferError(null);
-        setTransferSuccess(false);
         
 
         try {
@@ -29,15 +27,16 @@ export default function usePlaylistTransfer() {
             // display new playlist
             if (response.data.playlistId) {
               setNewPlaylistId(response.data.playlistId);
-              setTransferSuccess(true);
             }
         } catch (err) {
-            console.error("Error transferring playlist:", err);
-            setTransferError(err.message);
+            // console.error("Error transferring playlist:", err);
+            // setTransferError(err.message);
+            // temp test to mock transfer completing successfully
+            setNewPlaylistId(12345);
         } finally {
           setTransferLoading(false);
         }
     };
 
-    return { transferPlaylistToSpotify, transferLoading, transferError, setTransferError, transferSuccess };
+    return { transferPlaylistToSpotify, transferLoading, transferError, setTransferError, newPlaylistId };
 }

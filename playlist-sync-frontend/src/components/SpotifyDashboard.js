@@ -7,7 +7,7 @@ import { usePlaylists } from "../hooks/usePlaylists";
 import { usePlaylistItems } from "../hooks/usePlaylistItems";
 import { fetchTopSongs } from "../api";
 
-function SpotifyDashboard() {
+function SpotifyDashboard({ newSpotifyPlaylistId, setNewSpotifyPlaylistId }) {
     const [view, setView] = useState('TOP_SONGS'); // Default view
     const [currentPlaylistName, setCurrentPlaylistName] = useState('');
 
@@ -18,6 +18,13 @@ function SpotifyDashboard() {
     useEffect(() => {
         fetchTopSongs().then((res) => setTopSongs(res.data.items));
     }, []);
+
+    useEffect(() => {
+      if (newSpotifyPlaylistId) {
+        console.log(`got new playlist ${newSpotifyPlaylistId}`)
+        // display new playlist
+      }
+    }, [newSpotifyPlaylistId]);
 
     // Handle Navigation from Navbar
     const handleNavigate = (view) => {
