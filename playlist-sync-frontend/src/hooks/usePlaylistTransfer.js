@@ -5,6 +5,7 @@ export default function usePlaylistTransfer() {
     const [transferLoading, setTransferLoading] = useState(false);
     const [transferError, setTransferError] = useState(null);
     const [newPlaylistId, setNewPlaylistId] = useState(null);
+    const [newPlaylistName, setNewPlaylistName] = useState(null);
 
     const transferPlaylistToSpotify = async (playlistName, playlistItems) => {
         setTransferLoading(true);
@@ -22,21 +23,17 @@ export default function usePlaylistTransfer() {
             }));
 
             const response = await transferPlaylist(playlistName, songsData); // this returns the newly created spotify playlist id
-            // get new playlist songs using usePlaylistItems()
-            // set the view in spotify dashboard to PLAYLIST_ITEMS
-            // display new playlist
             if (response.data.playlistId) {
               setNewPlaylistId(response.data.playlistId);
+              setNewPlaylistName(response.data.playlistName);
             }
         } catch (err) {
-            // console.error("Error transferring playlist:", err);
-            // setTransferError(err.message);
-            // temp test to mock transfer completing successfully
-            setNewPlaylistId(12345);
+            console.error("Error transferring playlist:", err);
+            setTransferError(err.message);
         } finally {
           setTransferLoading(false);
         }
     };
 
-    return { transferPlaylistToSpotify, transferLoading, transferError, setTransferError, newPlaylistId };
+    return { transferPlaylistToSpotify, transferLoading, transferError, setTransferError, newPlaylistId, newPlaylistName };
 }

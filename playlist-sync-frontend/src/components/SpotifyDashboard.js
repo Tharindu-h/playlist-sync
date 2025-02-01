@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Navbar from "./Navbar";
 import TopSongsList from "./TopSongsList";
 import PlaylistsList from "./PlaylistsList";
@@ -7,7 +7,7 @@ import { usePlaylists } from "../hooks/usePlaylists";
 import { usePlaylistItems } from "../hooks/usePlaylistItems";
 import { fetchTopSongs } from "../api";
 
-function SpotifyDashboard({ newSpotifyPlaylistId, setNewSpotifyPlaylistId }) {
+function SpotifyDashboard({ newSpotifyPlaylistId, setNewSpotifyPlaylistId, newSpotifyPlaylistName, setNewSpotifyPlaylistName }) {
     const [view, setView] = useState('TOP_SONGS'); // Default view
     const [currentPlaylistName, setCurrentPlaylistName] = useState('');
 
@@ -19,13 +19,6 @@ function SpotifyDashboard({ newSpotifyPlaylistId, setNewSpotifyPlaylistId }) {
         fetchTopSongs().then((res) => setTopSongs(res.data.items));
     }, []);
 
-    useEffect(() => {
-      if (newSpotifyPlaylistId) {
-        console.log(`got new playlist ${newSpotifyPlaylistId}`)
-        // display new playlist
-      }
-    }, [newSpotifyPlaylistId]);
-
     // Handle Navigation from Navbar
     const handleNavigate = (view) => {
         setView(view);
@@ -33,11 +26,20 @@ function SpotifyDashboard({ newSpotifyPlaylistId, setNewSpotifyPlaylistId }) {
     };
 
     // Handle Playlist Selection
-    const handlePlaylistSelect = (playlistId, playlistName) => {
-        getPlaylistItems(playlistId);
-        setCurrentPlaylistName(playlistName);
-        setView('PLAYLIST_ITEMS'); // Switch view to Playlist Items
-    };
+    const handlePlaylistSelect = useCallback(
+      (playlistId, playlistName) => {
+          getPlaylistItems(playlistId);
+          setCurrentPlaylistName(playlistName);
+          setView('PLAYLIST_ITEMS');
+      },
+      [getPlaylistItems]
+    );
+
+    useEffect(() => {
+      if (newSpotifyPlaylistId) {
+        handlePlaylistSelect(newSpotifyPlaylistId, newSpotifyPlaylistName);
+      }
+    }, [newSpotifyPlaylistId, newSpotifyPlaylistName, handlePlaylistSelect]);
 
     return (
         <div className="min-h-screen bg-gradient-to-r from-green-400 to-blue-500">

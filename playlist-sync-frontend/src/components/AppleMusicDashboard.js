@@ -6,7 +6,7 @@ import PlaylistItemsList from "./PlaylistItemsList";
 import useAppleMusic from "../hooks/useAppleMusic";
 import usePlaylistTransfer from "../hooks/usePlaylistTransfer";
 
-function AppleMusicDashboard({ setNewSpotifyPlaylistId }) {
+function AppleMusicDashboard({ setNewSpotifyPlaylistId, setNewSpotifyPlaylistName }) {
     const {
         isLoggedIn,
         recentSongs,
@@ -19,7 +19,7 @@ function AppleMusicDashboard({ setNewSpotifyPlaylistId }) {
         nextPageUrl,
     } = useAppleMusic();
 
-    const { transferPlaylistToSpotify, transferLoading, transferError, setTransferError, newPlaylistId } = usePlaylistTransfer();
+    const { transferPlaylistToSpotify, transferLoading, transferError, setTransferError, newPlaylistId, newPlaylistName } = usePlaylistTransfer();
 
     const [view, setView] = useState("TOP_SONGS"); // Default view
     const [currentPlaylistName, setCurrentPlaylistName] = useState("");
@@ -34,10 +34,10 @@ function AppleMusicDashboard({ setNewSpotifyPlaylistId }) {
 
     useEffect(() => {
       if (newPlaylistId) {
-        console.log(`setting new spotify playlist id: ${newPlaylistId} from apple music`);
         setNewSpotifyPlaylistId(newPlaylistId);
+        setNewSpotifyPlaylistName(`${newPlaylistName}`);
       }
-    }, [newPlaylistId]);
+    }, [newPlaylistId, newPlaylistName, setNewSpotifyPlaylistId, setNewSpotifyPlaylistName]);
 
     // Handle Navigation from Navbar
     const handleNavigate = (view) => {
