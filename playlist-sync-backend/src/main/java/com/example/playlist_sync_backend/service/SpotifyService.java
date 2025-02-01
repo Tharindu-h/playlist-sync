@@ -7,7 +7,10 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class SpotifyService {
@@ -112,17 +115,22 @@ public class SpotifyService {
             return response.get("id").asText();
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            throw e;
         }
     }
 
     public void addSongsToPlaylist(String userName, String playlistId, List<String> songUris) {
         String token = getAccessToken(userName);
         try {
+            Map<String, Object> requestBody = new HashMap<>();
+            requestBody.put("uris", songUris);
+            String jsonBody = new ObjectMapper().writeValueAsString(requestBody);
+            System.out.println("JSON Request Body: " + jsonBody);
+
             this.webClient.post()
                     .uri("/playlists/" + playlistId + "/tracks")
                     .header("Authorization", "Bearer " + token)
-                    .bodyValue("{\"uris\": " + songUris.toString() + "}")
+                    .bodyValue(jsonBody)
                     .retrieve()
                     .bodyToMono(Void.class)
                     .block();
