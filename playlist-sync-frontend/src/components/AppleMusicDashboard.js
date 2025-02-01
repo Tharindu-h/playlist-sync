@@ -19,7 +19,14 @@ function AppleMusicDashboard({ setNewSpotifyPlaylistId, setNewSpotifyPlaylistNam
         nextPageUrl,
     } = useAppleMusic();
 
-    const { transferPlaylistToSpotify, transferLoading, transferError, setTransferError, newPlaylistId, newPlaylistName } = usePlaylistTransfer();
+    const { transferPlaylistToSpotify, 
+            transferLoading, 
+            transferError, 
+            setTransferError, 
+            newPlaylistId, 
+            setNewPlaylistId,
+            newPlaylistName,
+            setNewPlaylistName } = usePlaylistTransfer();
 
     const [view, setView] = useState("TOP_SONGS"); // Default view
     const [currentPlaylistName, setCurrentPlaylistName] = useState("");
@@ -44,7 +51,7 @@ function AppleMusicDashboard({ setNewSpotifyPlaylistId, setNewSpotifyPlaylistNam
         setView(view);
         if (view === "PLAYLISTS") {
           fetchUserPlaylists();
-          setTransferError(null);
+          cleanUpSpotifyTransfer();
         }
     };
 
@@ -53,7 +60,13 @@ function AppleMusicDashboard({ setNewSpotifyPlaylistId, setNewSpotifyPlaylistNam
         fetchPlaylistItems(playlistId);
         setCurrentPlaylistName(playlistName);
         setView("PLAYLIST_ITEMS");
-        setTransferError(null);
+        cleanUpSpotifyTransfer();
+    };
+
+    const cleanUpSpotifyTransfer = () => {
+      setTransferError(null);
+      setNewPlaylistId(null);
+      setNewPlaylistName(null);
     };
 
     return (
@@ -93,7 +106,16 @@ function AppleMusicDashboard({ setNewSpotifyPlaylistId, setNewSpotifyPlaylistNam
                         </h2>
                         {transferError !== null && (
                             <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 rounded-md shadow-md">
-                                <p className="font-semibold">⚠️ Error transferring playlist: {transferError}</p>
+                                <p className="font-semibold">
+                                  <span role="img" aria-label="warning">⚠️</span> Error transferring playlist: {transferError} 
+                                </p>
+                            </div>
+                        )}
+                        {newPlaylistId !== null && (
+                            <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4 rounded-md shadow-md">
+                                <p className="font-semibold">
+                                  <span role="img" aria-label="success">&#x2705;</span> Playlist transfer successfull 
+                                </p>
                             </div>
                         )}
                         <PlaylistItemsList
