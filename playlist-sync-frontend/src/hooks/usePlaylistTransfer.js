@@ -37,3 +37,6 @@ export default function usePlaylistTransfer() {
 
     return { transferPlaylistToSpotify, transferLoading, transferError, setTransferError, newPlaylistId, setNewPlaylistId, newPlaylistName, setNewPlaylistName };
 }
+
+
+//example playlist id: "6HZSItUP5ThyG1dWfWtaXJ" 

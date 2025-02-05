@@ -28,6 +28,7 @@ function SpotifyDashboard({ newSpotifyPlaylistId, setNewSpotifyPlaylistId, newSp
     // Handle Playlist Selection
     const handlePlaylistSelect = useCallback(
       (playlistId, playlistName) => {
+          console.log("getting playlist items")
           getPlaylistItems(playlistId);
           setCurrentPlaylistName(playlistName);
           setView('PLAYLIST_ITEMS');
@@ -36,10 +37,12 @@ function SpotifyDashboard({ newSpotifyPlaylistId, setNewSpotifyPlaylistId, newSp
     );
 
     useEffect(() => {
-      if (newSpotifyPlaylistId) {
-        handlePlaylistSelect(newSpotifyPlaylistId, newSpotifyPlaylistName);
+      if (newSpotifyPlaylistId && newSpotifyPlaylistName) {
+          handlePlaylistSelect(newSpotifyPlaylistId, newSpotifyPlaylistName);
+          setNewSpotifyPlaylistId(null);
+          setNewSpotifyPlaylistName(null);
       }
-    }, [newSpotifyPlaylistId, newSpotifyPlaylistName, handlePlaylistSelect]);
+  }, [newSpotifyPlaylistId, newSpotifyPlaylistName, handlePlaylistSelect, setNewSpotifyPlaylistId, setNewSpotifyPlaylistName]);
 
     return (
         <div className="min-h-screen bg-gradient-to-r from-green-400 to-blue-500">
@@ -53,7 +56,7 @@ function SpotifyDashboard({ newSpotifyPlaylistId, setNewSpotifyPlaylistId, newSp
                     <>
                         <div className="flex justify-between items-center">
                             <button
-                                onClick={() => setView('PLAYLISTS')}
+                                onClick={() => handleNavigate('PLAYLISTS')}
                                 className="bg-white text-green-600 font-bold py-2 px-4 rounded-md shadow-md hover:bg-pink-500 hover:text-white transition duration-300 mb-4"
                             >
                                 ← Back to Playlists
