@@ -15,6 +15,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/hello", "/login", "/oauth2/**",
                                 "/api/applemusic/token", "/api/spotify/isLoggedIn").permitAll() // Allow public access to /api/hello
+                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest().authenticated() // Secure all other endpoints
                 )
 
