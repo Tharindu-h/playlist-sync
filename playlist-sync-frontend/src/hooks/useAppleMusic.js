@@ -151,6 +151,41 @@ export default function useAppleMusic() {
       }
     }, [nextPageUrl, musicKitReady]);
 
+    const searchAppleMusicSongs = async (playlistItems) => {
+      console.log(playlistItems)
+      if (!musicKitReady) return [];
+      try{
+          const music = MusicKit.getInstance();
+          // const searchResults = await music.api.music(`/v1/catalog/us/search?types=songs&term=Like+That+keshi`); //works
+          // const searchResults = await music.api.music(`/v1/catalog/us/search?term=Wicked+Games+The+Weeknd&types=songs&limit=1`);
+          // console.log(searchResults);
+          const searchPromises = playlistItems.map(async (song) => {
+              const songName = song.track.name.replace(/ /g, "+");
+              const artists = song.track.artists
+                              .map((artist) => artist.name)
+                              .join("+")
+                              .replace(/ /g, "+");
+              console.log(`songName: ${songName}`);
+              console.log(`artists: ${artists}`);
+              console.log(`term: /v1/catalog/us/search?term=${songName + '+' + artists}&types=songs&limit=1`)
+              const searchResults = await music.api.music(`/v1/catalog/us/search?term=${songName + '+' + artists}&types=songs&limit=1`);
+              console.log(searchResults);
+              // return searchResults.songs?.data?.[0]?.id || null;
+          });
+      }catch (error) {
+          console.error("Failed to load more playlist items: ", error);
+      }
+      // const musicKit = window.MusicKit.getInstance();
+      
+      // const searchPromises = playlistItems.map(async (song) => {
+      //     const searchResults = await musicKit.api.music(`catalog/us/search?term=${encodeURIComponent(song.name + ' ' + song.artistName)}&types=songs&limit=1`);
+      //     console.log(searchResults);
+      //     return searchResults.songs?.data?.[0]?.id || null;
+      // });
+
+      // return (await Promise.all(searchPromises)).filter(id => id !== null);
+    };
+
     return { isLoggedIn, userToken, login, logout, recentSongs, fetchRecentSongs, userPlaylists, fetchUserPlaylists, 
-      fetchPlaylistItems, playlistItems, loadMoreItems, nextPageUrl, loading };
+      fetchPlaylistItems, playlistItems, loadMoreItems, nextPageUrl, loading, searchAppleMusicSongs };
 }

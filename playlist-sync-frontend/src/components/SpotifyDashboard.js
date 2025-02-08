@@ -6,6 +6,7 @@ import PlaylistItemsList from "./PlaylistItemsList";
 import { usePlaylists } from "../hooks/usePlaylists";
 import { usePlaylistItems } from "../hooks/usePlaylistItems";
 import { fetchTopSongs } from "../api";
+import usePlaylistTransfer from "../hooks/usePlaylistTransfer";
 
 function SpotifyDashboard({ newSpotifyPlaylistId, setNewSpotifyPlaylistId, newSpotifyPlaylistName, setNewSpotifyPlaylistName }) {
     const [view, setView] = useState('TOP_SONGS'); // Default view
@@ -14,6 +15,8 @@ function SpotifyDashboard({ newSpotifyPlaylistId, setNewSpotifyPlaylistId, newSp
     const [topSongs, setTopSongs] = React.useState([]);
     const { playlists, getPlaylists } = usePlaylists();
     const { playlistItems, getPlaylistItems, loadMoreItems, nextPageUrl } = usePlaylistItems();
+
+    const { transferPlaylistToApple } = usePlaylistTransfer();
 
     useEffect(() => {
         fetchTopSongs().then((res) => setTopSongs(res.data.items));
@@ -62,9 +65,7 @@ function SpotifyDashboard({ newSpotifyPlaylistId, setNewSpotifyPlaylistId, newSp
                                 ← Back to Playlists
                             </button>
                             <button
-                                onClick={() => {
-                                    // Add functionality here later
-                                }}
+                                onClick={() => transferPlaylistToApple(currentPlaylistName, playlistItems)}
                                 className="bg-white text-pink-500 font-bold py-2 px-4 rounded-md shadow-md hover:bg-pink-500 hover:text-white transition duration-300"
                             >
                                 Transfer to Apple Music
