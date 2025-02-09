@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Navbar from "./Navbar";
 import TopSongsList from "./TopSongsList";
 import PlaylistsList from "./PlaylistsList";
@@ -6,7 +6,9 @@ import PlaylistItemsList from "./PlaylistItemsList";
 import useAppleMusic from "../hooks/useAppleMusic";
 import usePlaylistTransfer from "../hooks/usePlaylistTransfer";
 
-function AppleMusicDashboard({ setNewSpotifyPlaylistId, setNewSpotifyPlaylistName }) {
+function AppleMusicDashboard({ setNewSpotifyPlaylistId, setNewSpotifyPlaylistName,
+                              newAMPlaylistId, newAMPlaylistName,
+                              setNewAMPlaylistId, setNewAMPlaylistName }) {
     const {
         isLoggedIn,
         recentSongs,
@@ -56,18 +58,30 @@ function AppleMusicDashboard({ setNewSpotifyPlaylistId, setNewSpotifyPlaylistNam
     };
 
     // Handle Playlist Selection
-    const handlePlaylistSelect = (playlistId, playlistName) => {
+    const handlePlaylistSelect = useCallback(
+      (playlistId, playlistName) => {
+        console.log(`Getting apple music playlist items`);
         fetchPlaylistItems(playlistId);
         setCurrentPlaylistName(playlistName);
         setView("PLAYLIST_ITEMS");
         cleanUpSpotifyTransfer();
-    };
+    }, 
+      [fetchPlaylistItems]
+    );
 
     const cleanUpSpotifyTransfer = () => {
       setTransferError(null);
       setNewPlaylistId(null);
       setNewPlaylistName(null);
     };
+
+    useEffect(() => {
+      if (newAMPlaylistId && newAMPlaylistName) {
+        handlePlaylistSelect(newAMPlaylistId, newAMPlaylistName);
+        setNewAMPlaylistId(null);
+        setNewAMPlaylistName(null);
+      }
+    }, [newAMPlaylistId, newAMPlaylistName, handlePlaylistSelect, setNewAMPlaylistId, setNewAMPlaylistName]);
 
     return (
         <div className="min-h-screen bg-gradient-to-r from-red-500 to-pink-500">

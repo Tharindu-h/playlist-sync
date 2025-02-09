@@ -62,7 +62,7 @@ export default function usePlaylistTransfer() {
             setNewPlaylistName(playlistName);
         } catch (error) {
             console.error(`error.message: ${error}`);
-            setTransferError(error.message);
+            setTransferError(error);
         } finally {
             setTransferLoading(false);
         }
