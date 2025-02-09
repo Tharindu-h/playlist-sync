@@ -128,6 +128,8 @@ export default function useAppleMusic() {
           setNextPageUrl(next);
       } catch (error) {
           console.error("Failed to fetch playlist items: ", error);
+          setPlaylistItems([]);
+          setNextPageUrl(null);
       } finally {
           setLoading(false);
       }
@@ -189,20 +191,15 @@ export default function useAppleMusic() {
           }
         };
         console.log(`LibraryPlaylistCreationRequest: ${LibraryPlaylistCreationRequest}`);
-        const response = await music.api.music(`/v1/me/library/playlists`, 
-                        LibraryPlaylistCreationRequest,
-                        { fetchOptions: 
-                            { 
-                              method: 'POST',
-                              headers: {
-                                'Content-Type': 'application/json'
-                              },
-                              body: JSON.stringify(LibraryPlaylistCreationRequest)
-                            } 
-                        });
-        
+        const response = await music.api.music(`/v1/me/library/playlists`, null, {
+          fetchOptions: {
+            method: "POST",
+            body: JSON.stringify(LibraryPlaylistCreationRequest),
+            headers: { "Content-Type": "application/json" }
+          }
+        });
         console.log(response);
-        console.log(response.data?.id);
+        console.log(response.data?.data?.[0]?.id);
       } catch (error) {
         console.error(`Error while creating Apple Music Playlist: ${error}`);
       }
@@ -212,3 +209,6 @@ export default function useAppleMusic() {
       fetchPlaylistItems, playlistItems, loadMoreItems, nextPageUrl, loading, searchAppleMusicSongs,
       createAppleMusicPlaylist };
 }
+
+
+// playlistId = "p.5PG5588iEmplPW";

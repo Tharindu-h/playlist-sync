@@ -65,7 +65,12 @@ function PlaylistItemsList({ items, loadMore, nextPageUrl, platform }) {
                     ))}
                 </ul>
             ) : (
-                <p className="text-gray-500">No tracks found in this playlist.</p>
+                <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 rounded-md shadow-md">
+                  <p className="font-semibold text-center">
+                    No tracks found in this playlist. 
+                  </p>
+                </div>
+                // <p className="text-black-500">No tracks found in this playlist.</p>
             )}
             {nextPageUrl && <p className="text-blue-500 text-center mt-4">Loading more...</p>}
             <div ref={infiniteRef} className="h-10 bg-transparent"></div>
