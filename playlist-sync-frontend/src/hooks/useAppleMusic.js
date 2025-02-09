@@ -153,6 +153,9 @@ export default function useAppleMusic() {
       }
     }, [nextPageUrl, musicKitReady]);
 
+    // TO_DO: for better search matches in the search query change the limit to 3-5
+    // check if playlistItems[i].track.explicit if true look at the search results to find
+    // a song that has searchResults.data?.[i]?.results?.songs?.data?.[0]?.attributes.contentRating==="explicit"
     const searchAppleMusicSongs = async (playlistItems) => {
       if (!musicKitReady) return [];
       try{
@@ -176,7 +179,7 @@ export default function useAppleMusic() {
         return AMSongIds;
       }catch (error) {
         console.error("Error while searching for songs in Apple Music: ", error);
-        throw error;
+        throw `Error while searching for songs in Apple Music: ${error}`;
       }
     };
 
@@ -186,11 +189,10 @@ export default function useAppleMusic() {
         const music = MusicKit.getInstance();
         let LibraryPlaylistCreationRequest = {
           "attributes": {
-            "description": "testDes", // support transferring the description later,
-            "name": `testPlaylist`
+            "description": "", // support transferring the description later,
+            "name": `${playlistName}`
           }
         };
-        console.log(`LibraryPlaylistCreationRequest: ${LibraryPlaylistCreationRequest}`);
         const response = await music.api.music(`/v1/me/library/playlists`, null, {
           fetchOptions: {
             method: "POST",
@@ -198,16 +200,43 @@ export default function useAppleMusic() {
             headers: { "Content-Type": "application/json" }
           }
         });
-        console.log(response);
-        console.log(response.data?.data?.[0]?.id);
+        return response.data?.data?.[0]?.id;
       } catch (error) {
         console.error(`Error while creating Apple Music Playlist: ${error}`);
+        throw `Error while creating Apple Music Playlist: ${error}`;
+      }
+    }
+
+    const addSongsToAMPlaylist = async(playlistId, songIds) => {
+      if (!musicKitReady || !playlistId || songIds.length === 0) return;
+      try {
+        const music = MusicKit.getInstance();
+        let songData = songIds.map((song) => {
+          return {
+            id: song,
+            type: "songs"
+          }
+        });
+        let LibraryPlaylistTracksRequest = {
+          data: songData
+        }
+        const response = await music.api.music(`/v1/me/library/playlists/${playlistId}/tracks`, null, {
+          fetchOptions: {
+            method: "POST",
+            body: JSON.stringify(LibraryPlaylistTracksRequest),
+            headers: { "Content-Type": "application/json" }
+          }
+        });
+        return response.response.ok;
+      } catch (error) {
+        console.error(`Error adding songs to playlist: ${error}`);
+        throw `Error adding songs to playlist: ${error}`;
       }
     }
 
     return { isLoggedIn, userToken, login, logout, recentSongs, fetchRecentSongs, userPlaylists, fetchUserPlaylists, 
       fetchPlaylistItems, playlistItems, loadMoreItems, nextPageUrl, loading, searchAppleMusicSongs,
-      createAppleMusicPlaylist };
+      createAppleMusicPlaylist, addSongsToAMPlaylist };
 }
 
 

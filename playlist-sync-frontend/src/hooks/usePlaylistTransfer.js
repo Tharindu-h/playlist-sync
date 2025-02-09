@@ -10,7 +10,8 @@ export default function usePlaylistTransfer() {
     const { 
         isLoggedIn, 
         searchAppleMusicSongs,
-        createAppleMusicPlaylist 
+        createAppleMusicPlaylist,
+        addSongsToAMPlaylist
     } = useAppleMusic();
 
     const transferPlaylistToSpotify = async (playlistName, playlistItems) => {
@@ -51,17 +52,16 @@ export default function usePlaylistTransfer() {
         setTransferError(null);
         
         try {
-            // const appleMusicIds = await searchAppleMusicSongs(playlistItems);
-            // if (appleMusicIds.length === 0) {
-                // throw new Error("No matching songs found on Apple Music.");
-            // }
-            // console.log(`ids: ${appleMusicIds}`)
-            // console.log(`after throwing err`);
-            const playlistResponse = await createAppleMusicPlaylist(playlistName);
-            // setNewPlaylistId(playlistResponse.id);
-            // setNewPlaylistName(playlistName);
+            const appleMusicSongIds = await searchAppleMusicSongs(playlistItems);
+            if (appleMusicSongIds.length === 0) {
+                throw new Error("No matching songs found on Apple Music.");
+            }
+            const newAMPlaylistId = await createAppleMusicPlaylist(playlistName);
+            const addPlaylistItemsResponse = await addSongsToAMPlaylist(newAMPlaylistId, appleMusicSongIds);
+            setNewPlaylistId(newAMPlaylistId);
+            setNewPlaylistName(playlistName);
         } catch (error) {
-          console.log(`error.message: ${error.message}`);
+            console.error(`error.message: ${error}`);
             setTransferError(error.message);
         } finally {
             setTransferLoading(false);
