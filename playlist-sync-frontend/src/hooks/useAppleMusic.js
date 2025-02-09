@@ -128,6 +128,8 @@ export default function useAppleMusic() {
           setNextPageUrl(next);
       } catch (error) {
           console.error("Failed to fetch playlist items: ", error);
+          setPlaylistItems([]);
+          setNextPageUrl(null);
       } finally {
           setLoading(false);
       }
@@ -151,6 +153,91 @@ export default function useAppleMusic() {
       }
     }, [nextPageUrl, musicKitReady]);
 
+    // TO_DO: for better search matches in the search query change the limit to 3-5
+    // check if playlistItems[i].track.explicit if true look at the search results to find
+    // a song that has searchResults.data?.[i]?.results?.songs?.data?.[0]?.attributes.contentRating==="explicit"
+    const searchAppleMusicSongs = async (playlistItems) => {
+      if (!musicKitReady) return [];
+      try{
+        const music = MusicKit.getInstance();
+        let AMSongIds = [];
+        for (let i = 0; i < playlistItems.length; i++) {
+          const songName = playlistItems[i].track.name
+                            .replace(/&/, "")
+                            .replace(/ +/g, "+");
+          const artists = playlistItems[i].track.artists
+                          .map((artist) => artist.name)
+                          .join("+")
+                          .replace(/&/, "")
+                          .replace(/ +/g, "+");
+          const searchResults = await music.api.music(`/v1/catalog/us/search?term=${songName + '+' + artists}&types=songs&limit=1`);
+          const result = searchResults.data?.results?.songs?.data?.[0]?.attributes 
+                        ? searchResults.data.results?.songs.data[0].attributes
+                        : null;
+          if (result) {   AMSongIds.push(result.playParams.id);   }
+        }
+        return AMSongIds;
+      }catch (error) {
+        console.error("Error while searching for songs in Apple Music: ", error);
+        throw new Error(`Error while searching for songs in Apple Music: ${error}`);
+      }
+    };
+
+    const createAppleMusicPlaylist = async(playlistName) => {
+      if (!musicKitReady || !playlistName) return;
+      try {
+        const music = MusicKit.getInstance();
+        let LibraryPlaylistCreationRequest = {
+          "attributes": {
+            "description": "", // support transferring the description later,
+            "name": `${playlistName}`
+          }
+        };
+        const response = await music.api.music(`/v1/me/library/playlists`, null, {
+          fetchOptions: {
+            method: "POST",
+            body: JSON.stringify(LibraryPlaylistCreationRequest),
+            headers: { "Content-Type": "application/json" }
+          }
+        });
+        return response.data?.data?.[0]?.id;
+      } catch (error) {
+        console.error(`Error while creating Apple Music Playlist: ${error}`);
+        throw new Error(`Error while creating Apple Music Playlist: ${error}`);
+      }
+    }
+
+    const addSongsToAMPlaylist = async(playlistId, songIds) => {
+      if (!musicKitReady || !playlistId || songIds.length === 0) return;
+      try {
+        const music = MusicKit.getInstance();
+        let songData = songIds.map((song) => {
+          return {
+            id: song,
+            type: "songs"
+          }
+        });
+        let LibraryPlaylistTracksRequest = {
+          data: songData
+        }
+        const response = await music.api.music(`/v1/me/library/playlists/${playlistId}/tracks`, null, {
+          fetchOptions: {
+            method: "POST",
+            body: JSON.stringify(LibraryPlaylistTracksRequest),
+            headers: { "Content-Type": "application/json" }
+          }
+        });
+        return response.response.ok;
+      } catch (error) {
+        console.error(`Error adding songs to playlist: ${error}`);
+        throw new Error(`Error adding songs to playlist: ${error}`);
+      }
+    }
+
     return { isLoggedIn, userToken, login, logout, recentSongs, fetchRecentSongs, userPlaylists, fetchUserPlaylists, 
-      fetchPlaylistItems, playlistItems, loadMoreItems, nextPageUrl, loading };
+      fetchPlaylistItems, playlistItems, loadMoreItems, nextPageUrl, loading, searchAppleMusicSongs,
+      createAppleMusicPlaylist, addSongsToAMPlaylist };
 }
+
+
+// playlistId = "p.5PG5588iEmplPW";
