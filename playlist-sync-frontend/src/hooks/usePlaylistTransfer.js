@@ -57,7 +57,7 @@ export default function usePlaylistTransfer() {
                 throw new Error("No matching songs found on Apple Music.");
             }
             const newAMPlaylistId = await createAppleMusicPlaylist(playlistName);
-            const addPlaylistItemsResponse = await addSongsToAMPlaylist(newAMPlaylistId, appleMusicSongIds);
+            await addSongsToAMPlaylist(newAMPlaylistId, appleMusicSongIds);
             setNewPlaylistId(newAMPlaylistId);
             setNewPlaylistName(playlistName);
         } catch (error) {

@@ -31,10 +31,19 @@ function SpotifyDashboard({ newSpotifyPlaylistId, setNewSpotifyPlaylistId,
         fetchTopSongs().then((res) => setTopSongs(res.data.items));
     }, []);
 
+    const cleanUpAMTransfer = useCallback(() => {
+      setTransferError(null);
+      setNewPlaylistId(null);
+      setNewPlaylistName(null);
+    }, [setTransferError, setNewPlaylistId, setNewPlaylistName]);
+
     // Handle Navigation from Navbar
     const handleNavigate = (view) => {
         setView(view);
-        if (view === 'PLAYLISTS') getPlaylists();
+        if (view === 'PLAYLISTS') {
+          getPlaylists();
+          cleanUpAMTransfer();
+        };
     };
 
     // Handle Playlist Selection
@@ -46,14 +55,8 @@ function SpotifyDashboard({ newSpotifyPlaylistId, setNewSpotifyPlaylistId,
           setView('PLAYLIST_ITEMS');
           cleanUpAMTransfer();
       },
-      [getPlaylistItems]
+      [getPlaylistItems, cleanUpAMTransfer]
     );
-
-    const cleanUpAMTransfer = () => {
-      setTransferError(null);
-      setNewPlaylistId(null);
-      setNewPlaylistName(null);
-    }
 
     useEffect(() => {
       if (newSpotifyPlaylistId && newSpotifyPlaylistName) {

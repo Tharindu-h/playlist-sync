@@ -48,6 +48,12 @@ function AppleMusicDashboard({ setNewSpotifyPlaylistId, setNewSpotifyPlaylistNam
       }
     }, [newPlaylistId, newPlaylistName, setNewSpotifyPlaylistId, setNewSpotifyPlaylistName]);
 
+    const cleanUpSpotifyTransfer = useCallback(() => {
+      setTransferError(null);
+      setNewPlaylistId(null);
+      setNewPlaylistName(null);
+    }, [setTransferError, setNewPlaylistId, setNewPlaylistName]);
+
     // Handle Navigation from Navbar
     const handleNavigate = (view) => {
         setView(view);
@@ -66,14 +72,8 @@ function AppleMusicDashboard({ setNewSpotifyPlaylistId, setNewSpotifyPlaylistNam
         setView("PLAYLIST_ITEMS");
         cleanUpSpotifyTransfer();
     }, 
-      [fetchPlaylistItems]
+      [fetchPlaylistItems, cleanUpSpotifyTransfer]
     );
-
-    const cleanUpSpotifyTransfer = () => {
-      setTransferError(null);
-      setNewPlaylistId(null);
-      setNewPlaylistName(null);
-    };
 
     useEffect(() => {
       if (newAMPlaylistId && newAMPlaylistName) {
