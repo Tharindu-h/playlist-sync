@@ -179,7 +179,7 @@ export default function useAppleMusic() {
         return AMSongIds;
       }catch (error) {
         console.error("Error while searching for songs in Apple Music: ", error);
-        throw `Error while searching for songs in Apple Music: ${error}`;
+        throw new Error(`Error while searching for songs in Apple Music: ${error}`);
       }
     };
 
@@ -203,7 +203,7 @@ export default function useAppleMusic() {
         return response.data?.data?.[0]?.id;
       } catch (error) {
         console.error(`Error while creating Apple Music Playlist: ${error}`);
-        throw `Error while creating Apple Music Playlist: ${error}`;
+        throw new Error(`Error while creating Apple Music Playlist: ${error}`);
       }
     }
 
@@ -230,7 +230,7 @@ export default function useAppleMusic() {
         return response.response.ok;
       } catch (error) {
         console.error(`Error adding songs to playlist: ${error}`);
-        throw `Error adding songs to playlist: ${error}`;
+        throw new Error(`Error adding songs to playlist: ${error}`);
       }
     }
 
